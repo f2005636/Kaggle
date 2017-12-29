@@ -1,0 +1,105 @@
+options compress=yes;
+libname rg "/ccr/ccar_secured/rg83892/us_2017/data";
+
+%macro roll_rate (cnt);
+proc print data = rg.tran_mat;  run;
+
+data _null_;
+call symput('cln',25250);
+call symput('d30',575);
+call symput('d60',220);
+call symput('d90',0);
+run;
+
+data fin_pop;
+iteration = 0;
+cln = &cln.;
+d30 = &d30.;
+d60 = &d60.;
+d90 = &d90.;
+run;
+
+%do i=1 %to &cnt.; 
+data calc_mat;
+
+if &i. <= 12 then do;
+cln_to_cln = 0.9901 * &cln.;
+cln_to_d30 = 0.0099 * &cln.;
+d30_to_cln = 0.3478 * &d30.;
+d30_to_d30 = 0.4348 * &d30.;
+d30_to_d60 = 0.2174 * &d30.;
+d60_to_cln = 0.0909 * &d60.;
+d60_to_d30 = 0.1136 * &d60.;
+d60_to_d60 = 0.3409 * &d60.;
+d60_to_d90 = 0.4545 * &d60.;
+end;
+
+else if &i <= 36 then do;
+cln_to_cln = 0.9950 * &cln.;
+cln_to_d30 = 0.0050 * &cln.;
+d30_to_cln = 0.3902 * &d30.;
+d30_to_d30 = 0.4878 * &d30.;
+d30_to_d60 = 0.1220 * &d30.;
+d60_to_cln = 0.1176 * &d60.;
+d60_to_d30 = 0.1471 * &d60.;
+d60_to_d60 = 0.4412 * &d60.;
+d60_to_d90 = 0.2941 * &d60.;
+end;
+
+else do;
+cln_to_cln = 0.9994 * &cln.;
+cln_to_d30 = 0.0006 * &cln.;
+d30_to_cln = 0.4369 * &d30.;
+d30_to_d30 = 0.5461 * &d30.;
+d30_to_d60 = 0.0171 * &d30.;
+d60_to_cln = 0.1584 * &d60.;
+d60_to_d30 = 0.1980 * &d60.;
+d60_to_d60 = 0.5941 * &d60.;
+d60_to_d90 = 0.0495 * &d60.;
+end;
+
+call symput('cln',sum(cln_to_cln , d30_to_cln , d60_to_cln));
+call symput('d30',sum(cln_to_d30 , d30_to_d30 , d60_to_d30));
+call symput('d60',sum(d30_to_d60 , d60_to_d60));
+call symput('d90',sum(&d90. , d60_to_d90));
+run;
+
+data temp;
+iteration = &i.;
+cln = &cln.;
+d30 = &d30.;
+d60 = &d60.;
+d90 = &d90.;
+run;
+data fin_pop; set fin_pop temp; run; 
+%end;
+
+%mend;
+%roll_rate(60);
+
+Year 1
+from_to	clean	dpd_30	dpd_60	dpd_90	total
+clean	0.9901	0.0099	0.0000	0.0000	1.0000
+dpd_30	0.3478	0.4348	0.2174	0.0000	1.0000
+dpd_60	0.0909	0.1136	0.3409	0.4545	1.0000
+
+years 2 - 3
+from_to	clean	dpd_30	dpd_60	dpd_90	total
+clean	0.9950	0.0050	0.0000	0.0000	1.0000
+dpd_30	0.3902	0.4878	0.1220	0.0000	1.0000
+dpd_60	0.1176	0.1471	0.4412	0.2941	1.0000
+
+years 3+
+from_to	clean	dpd_30	dpd_60	dpd_90	total
+clean	0.9994	0.0006	0.0000	0.0000	1.0000
+dpd_30	0.4369	0.5461	0.0171	0.0000	1.0000
+dpd_60	0.1584	0.1980	0.5941	0.0495	1.0000
+
+iteration	cln	d30	d60	d90
+0	25250	575	220	0
+1	25220.008	524.977	200.003	99.99
+2	25171.09719	500.6584196	182.3110225	190.8913635
+3	25112.6044	487.5906752	170.992968	273.7517232
+4	25049.11692	480.0440103	164.2937156	351.4680272
+5	24983.02426	475.3731593	160.3692955	426.1395209
+
