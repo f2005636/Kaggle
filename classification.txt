@@ -1,0 +1,8 @@
+Classification Algorithms
+Logistic Regression 
+Naïve Bayes 
+Stochastic Gradient Descent 
+K-Nearest Neighbours 
+Decision Tree 
+Random Forest
+Support Vector Machine
