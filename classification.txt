@@ -1,8 +1,116 @@
-Classification Algorithms
-Logistic Regression 
-Naïve Bayes 
-Stochastic Gradient Descent 
-K-Nearest Neighbours 
-Decision Tree 
-Random Forest
-Support Vector Machine
+proc contents data=rg.df; run;
+
+data df;
+format AGE_bin $50.;
+format PAYAMT_BIN $50.;
+format REVOLVE_BIN $50.;
+set rg.df;
+if EDUCATION in (1,2,3);
+if MARRIAGE in (1,2);
+if AGE <= 70; 
+
+if AGE <= 25 then AGE_bin = 'a. 0-25 & 46-70';
+else if AGE <= 45 then AGE_bin = 'b. 26-45';
+else AGE_bin = 'a. 0-25 & 46-70';
+
+if AGE_bin = 'a. 0-25 & 46-70' and EDUCATION = 1 then AGE_EDUCATION = 'b. 
+
+Low';
+else if AGE_bin = 'a. 0-25 & 46-70' and EDUCATION = 2 then AGE_EDUCATION = 
+
+'a. High';
+else if AGE_bin = 'a. 0-25 & 46-70' and EDUCATION = 3 then AGE_EDUCATION = 
+
+'a. High';
+else if AGE_bin = 'b. 26-45' and EDUCATION = 1 then AGE_EDUCATION = 'b. Low';
+else AGE_EDUCATION = 'b. Low';
+
+BILLAMT_SUM = SUM
+
+(BILLAMT_SEP05,BILLAMT_AUG05,BILLAMT_JUL05,BILLAMT_JUN05,BILLAMT_MAY05,BILLAM
+
+T_APR05);
+BILLAMT_AVG = BILLAMT_SUM/6;
+
+PAYAMT_SUM = SUM
+
+(PAYAMT_SEP05,PAYAMT_AUG05,PAYAMT_JUL05,PAYAMT_JUN05,PAYAMT_MAY05,PAYAMT_APR0
+
+5);
+PAYAMT_AVG = PAYAMT_SUM/6;
+
+OUTSTANDING_SUM = BILLAMT_SUM - PAYAMT_SUM;
+OUTSTANDING_AVG = BILLAMT_AVG - PAYAMT_AVG;
+
+OUTRATIO_SUM = OUTSTANDING_SUM / LIMIT_BAL;
+OUTRATIO_AVG = OUTSTANDING_AVG / LIMIT_BAL;
+
+REVOLVE_SUM = BILLAMT_SUM / LIMIT_BAL;
+REVOLVE_AVG = BILLAMT_AVG / LIMIT_BAL;
+
+if PAYAMT_AVG <= 200 then PAYAMT_BIN = 'a. <= 200';
+else if PAYAMT_AVG <= 1200 then PAYAMT_BIN = 'b. <= 1200';
+else if PAYAMT_AVG <= 2100 then PAYAMT_BIN = 'c. <= 2100';
+else if PAYAMT_AVG <= 2700 then PAYAMT_BIN = 'd. <= 2700';
+else if PAYAMT_AVG <= 4200 then PAYAMT_BIN = 'e. <= 4200';
+else if PAYAMT_AVG <= 9600 then PAYAMT_BIN = 'f. <= 9600';
+else PAYAMT_BIN = 'g. > 9600';
+
+if REVOLVE_SUM <= 0.01 then REVOLVE_BIN = 'b. <= 0.01 & 3.5-4.5';
+else if REVOLVE_SUM <= 0.05 then REVOLVE_BIN = 'c. 0.01-0.05 & 2.5-3.5';
+else if REVOLVE_SUM <= 0.10 then REVOLVE_BIN = 'd. 0.05-0.10 & 1.5-2.5';
+else if REVOLVE_SUM <= 1.50 then REVOLVE_BIN = 'e. 0.10-1.50';
+else if REVOLVE_SUM <= 2.50 then REVOLVE_BIN = 'd. 0.05-0.10 & 1.5-2.5';
+else if REVOLVE_SUM <= 3.50 then REVOLVE_BIN = 'c. 0.01-0.05 & 2.5-3.5';
+else if REVOLVE_SUM <= 4.50 then REVOLVE_BIN = 'b. <= 0.01 & 3.5-4.5';
+else REVOLVE_BIN = 'a. > 4.5';
+run;
+
+%macro rg_bin (var);
+proc sql;
+select &var., count(DEF_FLAG) as cnt_y, mean(DEF_FLAG) as avg_y
+from df
+group by &var.;
+quit;
+%mend;
+%rg_bin(SEX);
+%rg_bin(EDUCATION);
+%rg_bin(MARRIAGE);
+%rg_bin(AGE_bin);
+%rg_bin(AGE_EDUCATION);
+%rg_bin(PAYAMT_BIN);
+%rg_bin(REVOLVE_BIN);
+
+%macro bin_rg (groupNumber,varName);
+proc rank data=df out=df groups=&groupNumber;
+var &varName;
+ranks &varName._;
+run;
+
+proc sql;
+create table temp as 
+select &varName._, min(&varName.) as min_var, max(&varName.) as max_var, 
+mean(&varName.) as avg_var, mean(DEF_FLAG) as event_rate
+from df
+group by &varName._;
+quit;
+
+proc print data=temp;run;
+%mend;
+%bin_rg(15,BILLAMT_SUM);
+%bin_rg(15,BILLAMT_AVG);
+%bin_rg(15,PAYAMT_SUM);
+%bin_rg(15,PAYAMT_AVG);
+%bin_rg(15,OUTSTANDING_SUM);
+%bin_rg(15,OUTSTANDING_AVG);
+%bin_rg(15,OUTRATIO_SUM);
+%bin_rg(15,OUTRATIO_AVG);
+%bin_rg(15,REVOLVE_SUM);
+%bin_rg(15,REVOLVE_AVG);
+
+proc logistic data=df desc outest=estimates;
+class SEX MARRIAGE AGE_EDUCATION PAYAMT_BIN REVOLVE_BIN/ param=glm;
+model DEF_FLAG = SEX MARRIAGE AGE_EDUCATION PAYAMT_BIN REVOLVE_BIN
+/link=logit lackfit nodummyprint;
+output out=bin_model p=prob;
+run;
