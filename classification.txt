@@ -1,116 +1,47 @@
-proc contents data=rg.df; run;
+Ensemble methods
+Ensemble methods, which combines several decision trees to produce better predictive performance than utilizing a single decision tree. The main principle behind the ensemble model is that a group of weak learners come together to form a strong learner.
 
-data df;
-format AGE_bin $50.;
-format PAYAMT_BIN $50.;
-format REVOLVE_BIN $50.;
-set rg.df;
-if EDUCATION in (1,2,3);
-if MARRIAGE in (1,2);
-if AGE <= 70; 
+Objective of Analysis
+Minimization of risk and maximization of profit on behalf of the bank. To minimize loss from the bank’s perspective, the bank needs a decision rule regarding who to give approval of the loan and who not to. An applicant’s demographic and socio-economic profiles are considered by loan managers before a decision is taken regarding his/her loan application.
 
-if AGE <= 25 then AGE_bin = 'a. 0-25 & 46-70';
-else if AGE <= 45 then AGE_bin = 'b. 26-45';
-else AGE_bin = 'a. 0-25 & 46-70';
+The German Credit Data contains data on 20 variables and the classification whether an applicant is considered a Good or a Bad credit risk for 1000 loan applicants. Here is a link to the German Credit data.  A predictive model developed on this data is expected to provide a bank manager guidance for making a decision whether to approve a loan to a prospective applicant based on his/her profiles.
+EDA
 
-if AGE_bin = 'a. 0-25 & 46-70' and EDUCATION = 1 then AGE_EDUCATION = 'b. 
 
-Low';
-else if AGE_bin = 'a. 0-25 & 46-70' and EDUCATION = 2 then AGE_EDUCATION = 
+Cost-Profit Consideration
+Ultimately these statistical decisions must be translated into profit consideration for the bank. Let us assume that a correct decision of the bank would result in 35% profit at the end of 5 years. A correct decision here means that the bank predicts an application to be good or credit-worthy and it actually turns out to be credit worthy. When the opposite is true, i.e. bank predicts the application to be good but it turns out to be bad credit, then the loss is 100%. If the bank predicts an application to be non-creditworthy, then loan facility is not extended to that applicant and bank does not incur any loss (opportunity loss is not considered here). The cost matrix, therefore, is as follows:
 
-'a. High';
-else if AGE_bin = 'a. 0-25 & 46-70' and EDUCATION = 3 then AGE_EDUCATION = 
+Logistic regression model performance:
 
-'a. High';
-else if AGE_bin = 'b. 26-45' and EDUCATION = 1 then AGE_EDUCATION = 'b. Low';
-else AGE_EDUCATION = 'b. Low';
+Bagging 
+Bagging is used when the goal is to reduce the variance of a decision tree classifier. Here the objective is to create several subsets of data from training sample chosen randomly with replacement. Now, each collection of subset data is used to train their decision trees. As a result, we end up with an ensemble of different models. Average of all the predictions from different trees are used which is more robust than a single decision tree.
 
-BILLAMT_SUM = SUM
+Bagging Steps: 
+•	Suppose there are N observations and M features in training data set. First, a sample from training data set is taken randomly with replacement.
+•	A subset of M features are selected randomly and whichever feature gives the best split is used to split the node iteratively. 
+•	The tree is grown to the largest. 
+•	Above steps are repeated and prediction is given based on the aggregation of predictions from n number of trees.
 
-(BILLAMT_SEP05,BILLAMT_AUG05,BILLAMT_JUL05,BILLAMT_JUN05,BILLAMT_MAY05,BILLAM
+Advantages:
+•	Handles higher dimensionality data very well.
+•	Handles missing values and maintains accuracy for missing data.
 
-T_APR05);
-BILLAMT_AVG = BILLAMT_SUM/6;
+Disadvantages:
+•	Since final prediction is based on the mean predictions from subset trees, it won’t give precise values for the regression model.
+Boosting 
+Boosting is another ensemble technique to create a collection of predictors. In this technique, learners are learned sequentially with early learners fitting simple models to the data and then analyzing data for errors. In other words, we fit consecutive trees (random sample) and at every step, the goal is to solve for net error from the prior tree. When an input is misclassified by a hypothesis, its weight is increased so that next hypothesis is more likely to classify it correctly. By combining the whole set at the end converts weak learners into better performing model.
 
-PAYAMT_SUM = SUM
+Boosting Steps:
+•	Draw a random subset of training samples d1 without replacement from the training set D to train a weak learner C1
+•	Draw second random training subset d2 without replacement from the training set and add 50 percent of the samples that were previously falsely classified/misclassified to train a weak learner C2
+•	Find the training samples d3 in the training set D on which C1 and C2 disagree to train a third weak learner C3
+•	Combine all the weak learners via majority voting.
 
-(PAYAMT_SEP05,PAYAMT_AUG05,PAYAMT_JUL05,PAYAMT_JUN05,PAYAMT_MAY05,PAYAMT_APR0
+Advantages:
+•	Supports different loss function.
+•	Works well with interactions.
 
-5);
-PAYAMT_AVG = PAYAMT_SUM/6;
+Disadvantages:
+•	Prone to over-fitting.
+•	Requires careful tuning of different hyper-parameters
 
-OUTSTANDING_SUM = BILLAMT_SUM - PAYAMT_SUM;
-OUTSTANDING_AVG = BILLAMT_AVG - PAYAMT_AVG;
-
-OUTRATIO_SUM = OUTSTANDING_SUM / LIMIT_BAL;
-OUTRATIO_AVG = OUTSTANDING_AVG / LIMIT_BAL;
-
-REVOLVE_SUM = BILLAMT_SUM / LIMIT_BAL;
-REVOLVE_AVG = BILLAMT_AVG / LIMIT_BAL;
-
-if PAYAMT_AVG <= 200 then PAYAMT_BIN = 'a. <= 200';
-else if PAYAMT_AVG <= 1200 then PAYAMT_BIN = 'b. <= 1200';
-else if PAYAMT_AVG <= 2100 then PAYAMT_BIN = 'c. <= 2100';
-else if PAYAMT_AVG <= 2700 then PAYAMT_BIN = 'd. <= 2700';
-else if PAYAMT_AVG <= 4200 then PAYAMT_BIN = 'e. <= 4200';
-else if PAYAMT_AVG <= 9600 then PAYAMT_BIN = 'f. <= 9600';
-else PAYAMT_BIN = 'g. > 9600';
-
-if REVOLVE_SUM <= 0.01 then REVOLVE_BIN = 'b. <= 0.01 & 3.5-4.5';
-else if REVOLVE_SUM <= 0.05 then REVOLVE_BIN = 'c. 0.01-0.05 & 2.5-3.5';
-else if REVOLVE_SUM <= 0.10 then REVOLVE_BIN = 'd. 0.05-0.10 & 1.5-2.5';
-else if REVOLVE_SUM <= 1.50 then REVOLVE_BIN = 'e. 0.10-1.50';
-else if REVOLVE_SUM <= 2.50 then REVOLVE_BIN = 'd. 0.05-0.10 & 1.5-2.5';
-else if REVOLVE_SUM <= 3.50 then REVOLVE_BIN = 'c. 0.01-0.05 & 2.5-3.5';
-else if REVOLVE_SUM <= 4.50 then REVOLVE_BIN = 'b. <= 0.01 & 3.5-4.5';
-else REVOLVE_BIN = 'a. > 4.5';
-run;
-
-%macro rg_bin (var);
-proc sql;
-select &var., count(DEF_FLAG) as cnt_y, mean(DEF_FLAG) as avg_y
-from df
-group by &var.;
-quit;
-%mend;
-%rg_bin(SEX);
-%rg_bin(EDUCATION);
-%rg_bin(MARRIAGE);
-%rg_bin(AGE_bin);
-%rg_bin(AGE_EDUCATION);
-%rg_bin(PAYAMT_BIN);
-%rg_bin(REVOLVE_BIN);
-
-%macro bin_rg (groupNumber,varName);
-proc rank data=df out=df groups=&groupNumber;
-var &varName;
-ranks &varName._;
-run;
-
-proc sql;
-create table temp as 
-select &varName._, min(&varName.) as min_var, max(&varName.) as max_var, 
-mean(&varName.) as avg_var, mean(DEF_FLAG) as event_rate
-from df
-group by &varName._;
-quit;
-
-proc print data=temp;run;
-%mend;
-%bin_rg(15,BILLAMT_SUM);
-%bin_rg(15,BILLAMT_AVG);
-%bin_rg(15,PAYAMT_SUM);
-%bin_rg(15,PAYAMT_AVG);
-%bin_rg(15,OUTSTANDING_SUM);
-%bin_rg(15,OUTSTANDING_AVG);
-%bin_rg(15,OUTRATIO_SUM);
-%bin_rg(15,OUTRATIO_AVG);
-%bin_rg(15,REVOLVE_SUM);
-%bin_rg(15,REVOLVE_AVG);
-
-proc logistic data=df desc outest=estimates;
-class SEX MARRIAGE AGE_EDUCATION PAYAMT_BIN REVOLVE_BIN/ param=glm;
-model DEF_FLAG = SEX MARRIAGE AGE_EDUCATION PAYAMT_BIN REVOLVE_BIN
-/link=logit lackfit nodummyprint;
-output out=bin_model p=prob;
-run;
