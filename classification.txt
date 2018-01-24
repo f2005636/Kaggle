@@ -1,1 +1,33 @@
-google.co.in
+Steps for estimating a times series model are:
+Graph the data series to see what patterns are present – trend, cycle, seasonal, and random
+Test data for Stationarity with a Dickie Fuller Test
+If original series is not stationary then difference it until it is 
+Number of Differences (d) to make a series stationary is determined using the D-F Test
+Use the stationary (differenced) data series to determine the number of Lags that best forecasts the historical period
+Estimate the AR(p,q) Model and make a forecast
+
+The major components of such a model are usually the following:
+A base level
+A trend
+Cyclic fluctuations
+
+Data Preparation:
+Plot data and examine for stationarity
+Examine ACF for stationarity
+If not stationary, take first differences
+If variance appears non-constant, take logarithm before first differencing
+Examine the ACF after these transformations to determine if the series is now stationary
+
+Model Identification and Estimation:
+Examine the ACF and PACF’s of your (now) stationary series to get some ideas about what ARIMA(p,d,q) models to estimate.
+Estimate these models
+Examine the parameter estimates, the SBC statistic and test of white noise for the residuals.
+
+Forecasting:
+Use the best model to construct forecasts
+Graph your forecasts against actual values
+Calculate the Mean Squared Error for the forecasts
+
+Time Series Analysis Assumptions:
+Assume series you are forecasting is really random 
+Assume the variability is constant i.e., the same for the future as for the past, in other words 
