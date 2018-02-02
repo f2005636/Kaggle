@@ -1,0 +1,85 @@
+item_category_id,item_category_segment,item_category_name
+0,Headphones,PC Headphones
+1,Accessories,Accessories - PS2
+2,Accessories,Accessories - PS3
+3,Accessories,Accessories - PS4
+4,Accessories,Accessories - PSP
+5,Accessories,Accessories - PSVita
+6,Accessories,Accessories - XBOX 360
+7,Accessories,Accessories - XBOX ONE
+8,Tickets,Tickets - figure
+9,Delivery,Delivery of goods
+10,Consoles ,Game Consoles - PS2
+11,Consoles ,Game Consoles - PS3
+12,Consoles ,Game Consoles - PS4
+13,Consoles ,Game Consoles - PSP
+14,Consoles ,Game Consoles - PSVita
+15,Consoles ,Game Consoles - XBOX 360
+16,Consoles ,Game Consoles - XBOX ONE
+17,Consoles ,Game consoles - Other
+18,Games,Games - PS2
+19,Games,Games - PS3
+20,Games,Games - PS4
+21,Games,Games - PSP
+22,Games,Games - PSVita
+23,Games,Games - XBOX 360
+24,Games,Games - XBOX ONE
+25,Games,Games - Accessories for games
+26,Games,Games - Android
+27,Games,Games - MAC
+28,Games,PC Games - Additional Publications
+29,Games,PC Games - Collectors Editions
+30,Games,PC Games - Standard Edition
+31,Games,PC Games - Digital
+32,Cards,Payment cards - Others
+33,Cards,Payment cards - Live
+34,Cards,Payment cards - Live
+35,Cards,Payment cards - PSN
+36,Cards,Payment cards - Windows
+37,Movies,Movies - BluRay
+38,Movies,Movies - BluRay
+39,Movies,Movies - BluRay
+40,Movies,Movies - DVD
+41,Movies,Cinema - Collector
+42,Books,Books - Encyclopedias
+43,Books,Books - Audiobooks
+44,Books,Books - Audiobooks
+45,Books,Books - Audiobooks
+46,Books,Books - Business Literature
+47,Books,Books - Comics
+48,Books,Books - Computer Literature
+49,Books,Books - Methodical materials
+50,Books,Books - Postcards
+51,Books,Books - Cognitive Literature
+52,Books,Books - Travel Guides
+53,Books,Books - Fiction
+54,Books,Books - Figure
+55,Music,Music - CD local production
+56,Music,Music - CD of corporate production
+57,Music,Music - MP3
+58,Music,Music - Vinyl
+59,Music,Music - Musical video
+60,Music,Music - Gift Edition
+61,Gifts ,Gifts - Attributes
+62,Gifts ,Gifts - Gadgets
+63,Gifts ,Gifts - Soft toys
+64,Gifts ,Gifts - Board Games
+65,Gifts ,Gifts - Board Games
+66,Gifts ,Gifts - Postcards
+67,Gifts ,Gifts - Development
+68,Gifts ,Gifts - Certificates
+69,Gifts ,Gifts - Souvenirs
+70,Gifts ,Gifts - Souvenirs
+71,Gifts ,Gifts - Bags
+72,Gifts ,Gifts - Figures
+73,Programs ,Programs - Enterprise 8
+74,Programs ,Programs - MAC
+75,Programs ,Programs - Home and Office
+76,Programs ,Programs - Home and Office
+77,Programs ,Programs - Teaching
+78,Programs ,Programs - Teaching
+79,Official,Official
+80,Official,Official - Tickets
+81,Carriers ,Net carriers
+82,Carriers ,Pure carriers
+83,Food,Elements of a food
