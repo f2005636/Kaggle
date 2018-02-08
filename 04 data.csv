@@ -1,1 +1,21 @@
-rohit,garg
+Number of Observations Read,395,,,,
+Number of Observations Used,395,,,,
+,,,,,
+Analysis of Maximum Likelihood Estimates,,,,,
+Parameter,DF,Estimate,Standard,Wald,Pr > ChiSq
+,,,Error,Chi-Square,
+Intercept,1,-12.1791,2.0205,36.3347,<.0001
+p_failures,1,1.7506,0.3163,30.6358,<.0001
+p_t_absences,1,1.366,0.3821,12.7767,0.0004
+p_goout,1,1.378,0.439,9.8548,0.0017
+p_t_age,1,1.2495,0.6266,3.976,0.0462
+p_mjob,1,1.56,0.7317,4.5456,0.033
+p_freetime,1,1.6033,0.8157,3.8631,0.0494
+p_schoolsup,1,2.5008,0.9651,6.7139,0.0096
+,,,,,
+Association of Predicted Probabilities and,,,,,
+Observed Responses,,,,,
+Percent Concordant,77.7,Somers' D,0.559,,
+Percent Discordant,21.8,Gamma,0.562,,
+Percent Tied,0.5,Tau-a,0.247,,
+Pairs,34450,c,0.779,,
