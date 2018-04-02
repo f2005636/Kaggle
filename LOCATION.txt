@@ -1,0 +1,2 @@
+https://www.kaggle.com/sudalairajkumar/cryptocurrencypricehistory/data
+https://www.kaggle.com/philmod/nasdaqcomposite/data
