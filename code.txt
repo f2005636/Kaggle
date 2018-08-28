@@ -1,0 +1,34 @@
+import math
+import numpy as np
+import pandas as pd
+from datetime import datetime
+import seaborn as sns
+import matplotlib.pyplot as plt
+%matplotlib inline 
+plt.style.use('seaborn-whitegrid')
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn import metrics
+
+import io
+import requests
+url="https://raw.githubusercontent.com/f2005636/Kaggle/master/crime_v2.csv"
+s=requests.get(url).content
+data=pd.read_csv(io.StringIO(s.decode('utf-8')))
+data.info()
+
+y = data['crmrte']
+x = data.drop(['county','year','crmrte'], axis=1).copy()
+x.info()
+
+lm = LinearRegression()
+x = pd.DataFrame(x)
+lm.fit(x, y)
+print("intercept : ",lm.intercept_)
+print("coeffients: ",lm.coef_)
+
+y_test = lm.predict(x)
+plt.plot(y,y_test,'.')
+plt.plot(y,y,'-r')
+plt.xlabel('Y - Actual')
+plt.ylabel('Y - Predicted')
